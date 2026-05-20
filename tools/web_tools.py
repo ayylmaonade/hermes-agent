@@ -145,7 +145,7 @@ def _load_web_config() -> dict:
 # ``web.search_backend`` / ``web.extract_backend``). Kept as a single source of
 # truth for config validation across the selection helpers.
 _KNOWN_WEB_BACKENDS = frozenset(
-    {"parallel", "firecrawl", "tavily", "exa", "searxng", "brave-free", "ddgs", "xai"}
+    {"parallel", "firecrawl", "tavily", "exa", "jina", "searxng", "brave-free", "ddgs", "xai"}
 )
 
 # Backends that only service web_search (their provider's ``supports_extract()``
@@ -183,6 +183,7 @@ def _get_backend(capability: str = "search") -> str:
     backend_candidates = (
         ("tavily", _has_env("TAVILY_API_KEY")),
         ("exa", _has_env("EXA_API_KEY")),
+       ("jina", _has_env("JINA_API_KEY")),
         ("parallel", _has_env("PARALLEL_API_KEY")),
         ("firecrawl", _has_env("FIRECRAWL_API_KEY") or _has_env("FIRECRAWL_API_URL")),
         ("firecrawl", _is_tool_gateway_ready()),
@@ -263,6 +264,8 @@ def _is_backend_available(backend: str) -> bool:
         return check_firecrawl_api_key()
     if backend == "tavily":
         return _has_env("TAVILY_API_KEY")
+    if backend == "jina":
+        return _has_env("JINA_API_KEY")
     if backend == "searxng":
         return _has_env("SEARXNG_URL")
     if backend == "brave-free":
@@ -328,6 +331,7 @@ def _web_requires_env() -> list[str]:
         "TOOL_GATEWAY_DOMAIN",
         "TOOL_GATEWAY_SCHEME",
         "TOOL_GATEWAY_USER_TOKEN",
+        "JINA_API_KEY",
     ]
 
 
