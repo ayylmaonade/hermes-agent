@@ -184,7 +184,7 @@ def _get_backend(capability: str = "search") -> str:
         ("tavily", _has_env("TAVILY_API_KEY")),
         ("exa", _has_env("EXA_API_KEY")),
         ("jina", _has_env("JINA_API_KEY")),
-        ("parallel", _has_env("PARALLEL_API_KEY")),
+      ("parallel", _has_env("PARALLEL_API_KEY")),
         ("firecrawl", _has_env("FIRECRAWL_API_KEY") or _has_env("FIRECRAWL_API_URL")),
         ("firecrawl", _is_tool_gateway_ready()),
         ("searxng", _has_env("SEARXNG_URL")),

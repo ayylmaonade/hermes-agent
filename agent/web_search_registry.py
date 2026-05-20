@@ -125,6 +125,7 @@ _LEGACY_PREFERENCE = (
     "parallel",
     "tavily",
     "exa",
+    "jina",
     "searxng",
     "brave-free",
     "ddgs",
