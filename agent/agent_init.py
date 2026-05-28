@@ -1292,6 +1292,15 @@ def init_agent(
     compression_abort_on_summary_failure = str(
         _compression_cfg.get("abort_on_summary_failure", False)
     ).lower() in {"true", "1", "yes"}
+    # Maximum number of compression attempts before giving up.
+    # Default 3 — increase for large context windows (e.g. 102.4K)
+    # where a single compression pass may not shrink enough.
+    try:
+        _compression_max_attempts = int(_compression_cfg.get("max_attempts", 3))
+        _compression_max_attempts = max(_compression_max_attempts, 1)
+    except (TypeError, ValueError):
+        _compression_max_attempts = 3
+    agent._compression_max_attempts = _compression_max_attempts
 
     # Read optional explicit context_length override for the auxiliary
     # compression model. Custom endpoints often cannot report this via
