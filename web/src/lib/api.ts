@@ -154,13 +154,13 @@ export async function fetchJSON<T>(
       let alreadyReloaded = false;
       try {
         alreadyReloaded =
-          sessionStorage.getItem("hermes.tokenReloadAttempted") === "1";
+          localStorage.getItem("hermes.tokenReloadAttempted") === "1";
       } catch {
         /* SSR / privacy mode — fall through to throw */
       }
       if (!alreadyReloaded) {
         try {
-          sessionStorage.setItem("hermes.tokenReloadAttempted", "1");
+          localStorage.setItem("hermes.tokenReloadAttempted", "1");
         } catch {
           /* SSR / privacy mode — best effort */
         }
