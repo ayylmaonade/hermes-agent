@@ -784,11 +784,7 @@ MEMORY_SCHEMA = {
                 "description": "Short unique substring identifying the entry to replace or remove."
             },
         },
-        # old_text required globally because: (1) replace/remove need it, (2) add ignores it so requiring is harmless,
-        # (3) the allOf conditional-requirement approach was removed upstream (PR #21238) due to OpenAI Codex rejecting
-        #     top-level allOf/anyOf/oneOf with a non-retryable 400. Without this, the model never includes old_text
-        #     in tool calls → handler gets None → fails.
-        "required": ["action", "target", "old_text"],
+        "required": ["action", "target"],
     },
 }
 
