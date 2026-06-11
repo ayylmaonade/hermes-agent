@@ -16213,6 +16213,11 @@ async def start_gateway(config: Optional[GatewayConfig] = None, replace: bool = 
         from tools.mcp_tool import discover_mcp_tools
         _loop = asyncio.get_running_loop()
         await _loop.run_in_executor(None, discover_mcp_tools)
+        # Clear cached tool definitions so the first agent build sees all
+        # MCP tools — they were discovered after the module-level cache was
+        # initially populated.
+        from model_tools import _clear_tool_defs_cache
+        _clear_tool_defs_cache()
     except Exception as e:
         logger.debug("MCP tool discovery failed: %s", e)
 

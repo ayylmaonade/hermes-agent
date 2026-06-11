@@ -3300,6 +3300,11 @@ def _make_agent(
         from tui_gateway.entry import wait_for_mcp_discovery
 
         wait_for_mcp_discovery()
+        # Clear cached tool definitions so the first agent build sees all
+        # MCP tools — they were discovered after the module-level cache was
+        # initially populated.
+        from model_tools import _clear_tool_defs_cache
+        _clear_tool_defs_cache()
     except Exception:
         pass
 

@@ -1,0 +1,22 @@
+*** Begin Patch
+*** Update File: run_agent.py
+@@ self.service_tier = service_tier @@
+             self.service_tier = service_tier
++            self.extra_body = extra_body or {}
+             self.request_overrides = dict(request_overrides or {})
+*** Update File: run_agent.py
+@@ request_overrides=self.request_overrides, @@
+                 request_overrides=self.request_overrides,
++                extra_body_additions=self.extra_body,
+                 is_github_responses=is_github_responses,
+*** Update File: run_agent.py
+@@ request_overrides=self.request_overrides, @@
+                 request_overrides=self.request_overrides,
++                extra_body_additions=self.extra_body,
+                 session_id=getattr(self, "session_id", None),
+*** Update File: run_agent.py
+@@ request_overrides=self.request_overrides, @@
+             request_overrides=self.request_overrides,
++            extra_body_additions=self.extra_body,
+             session_id=getattr(self, "session_id", None),
+*** End Patch
