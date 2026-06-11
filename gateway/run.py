@@ -16221,6 +16221,32 @@ async def start_gateway(config: Optional[GatewayConfig] = None, replace: bool = 
     except Exception as e:
         logger.debug("MCP tool discovery failed: %s", e)
 
+    # --- Auto-reload MCP if servers are configured but tools are missing ---
+    # Initial discovery may have failed silently (e.g. transient network blip).
+    # If any MCP servers are configured but no MCP toolsets are registered,
+    # force a blocking re-discovery now so the first agent build picks them up.
+    try:
+        from tools.mcp_tool import discover_mcp_tools, _load_mcp_config
+        from tools.registry import registry
+
+        cfg_json = _load_mcp_config()
+        if cfg_json:
+            registered = any(
+                (ts or "").lower().startswith("mcp")
+                for ts in (registry.get_registered_toolset_names() or [])
+            )
+            if not registered:
+                logger.info(
+                    "MCP servers configured but not registered — reloading..."
+                )
+                _loop = asyncio.get_running_loop()
+                await _loop.run_in_executor(None, discover_mcp_tools)
+                from model_tools import _clear_tool_defs_cache
+                _clear_tool_defs_cache()
+    except Exception:
+        pass
+    # --- end auto-reload ----------------------------------------------------
+
     # Start the gateway
     success = await runner.start()
     if not success:

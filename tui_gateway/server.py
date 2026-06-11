@@ -3308,6 +3308,33 @@ def _make_agent(
     except Exception:
         pass
 
+    # --- Auto-reload MCP if servers are configured but tools are missing ---
+    # The background discovery thread may have raced or crashed (e.g. transient
+    # network blip at startup).  If any MCP servers are configured but no MCP
+    # toolsets are registered in the process-local registry, force a blocking
+    # re-discovery now so the agent's tool snapshot includes them.
+    try:
+        from tools.mcp_tool import discover_mcp_tools, _load_mcp_config
+        from tools.registry import registry
+
+        cfg_json = _load_mcp_config()
+        if cfg_json:
+            registered = any(
+                (ts or "").lower().startswith("mcp")
+                for ts in (registry.get_registered_toolset_names() or [])
+            )
+            if not registered:
+                logger.info(
+                    "MCP servers configured but not registered — reloading..."
+                )
+                discover_mcp_tools()
+                from model_tools import _clear_tool_defs_cache
+
+                _clear_tool_defs_cache()
+    except Exception:
+        pass
+    # --- end auto-reload ----------------------------------------------------
+
     cfg = _load_cfg()
     agent_cfg = cfg.get("agent") or {}
     system_prompt = _prompt_text(agent_cfg.get("system_prompt", ""))
